@@ -13,4 +13,4 @@ set (SOURCE_FILES
 
 add_executable(fake-smtp-server ${SOURCE_FILES})
 
-target_link_libraries(fake-smtp-server pthread boost_system)
+target_link_libraries(fake-smtp-server pthread boost_system boost_filesystem)

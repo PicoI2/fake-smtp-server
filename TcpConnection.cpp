@@ -46,7 +46,6 @@ void CTcpConnection::HandleRead(const boost::system::error_code& error, size_t b
 		ResetTimeout();
 
 		std::string message(mBuffer.begin(), mBuffer.begin()+bytes_transferred);
-		message[bytes_transferred] = '\0';
 
 		// Display received message
 		// std::cout << "\033[1;36m" << message << "\033[0m";
@@ -117,7 +116,6 @@ void CTcpConnection::ResetTimeout ()
 	mTimer.async_wait(
 		[self = shared_from_this()] (const boost::system::error_code& error_code)
 		{
-			std::cout << error_code << std::endl;
 			if (boost::asio::error::operation_aborted != error_code)
 			{
 				std::cout << "Connection timeout" << std::endl;
@@ -130,6 +128,7 @@ void CTcpConnection::ResetTimeout ()
 // Close connection
 void CTcpConnection::CloseConnection()
 {
+	mTimer.cancel();
 	if (mSocket.is_open())
 	{
 		std::cout << "Close client connection with " << mClientAsString << std::endl;
