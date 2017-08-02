@@ -6,10 +6,10 @@ static constexpr size_t MAX_EMAIL_SIZE = 1024*1024; // 1 Mo
 // Constructor
 CTcpConnection::CTcpConnection(boost::asio::io_service& aIoService, CEmailAnalyser& aEmailAnalyser) 
 	: mSocket(aIoService)
-	, mTimer(aIoService, boost::posix_time::seconds(TIMEOUT))	// Start timer at construction
+	, mTimer(aIoService)
 {
 	mConnection = NewMail.connect(
-		[&aEmailAnalyser] (auto aMessage) {aEmailAnalyser.NewEmail(aMessage);}
+		[&aEmailAnalyser] (const std::string& aMessage) {aEmailAnalyser.NewEmail(aMessage);}
 	);
 }
 
@@ -18,9 +18,9 @@ void CTcpConnection::Init ()
 {
 	mClientAsString = mSocket.remote_endpoint().address().to_string() + ":" + std::to_string(mSocket.remote_endpoint().port());
 
-	// Reset timeout
+	// Configure timeout
 	ResetTimeout();
-
+	
 	Send("220 SMTP Ready\r\n");	// Service ready
 
 	StartListening();
@@ -46,6 +46,7 @@ void CTcpConnection::HandleRead(const boost::system::error_code& error, size_t b
 		ResetTimeout();
 
 		std::string message(mBuffer.begin(), mBuffer.begin()+bytes_transferred);
+		message[bytes_transferred] = '\0';
 
 		// Display received message
 		// std::cout << "\033[1;36m" << message << "\033[0m";
@@ -111,11 +112,17 @@ void CTcpConnection::HandleWrite(const boost::system::error_code& error, size_t 
 // Reset timeout to initial value
 void CTcpConnection::ResetTimeout ()
 {
-	mTimer.async_wait(	// calling async_wait cancel previous async_wait
-		[self = shared_from_this()] (auto error_code)
+	mTimer.expires_from_now(boost::posix_time::seconds(TIMEOUT));
+	// Changing expiration time cancel the timer, so we have to start a new asynchronous wait
+	mTimer.async_wait(
+		[self = shared_from_this()] (const boost::system::error_code& error_code)
 		{
-			std::cout << "Connection timeout" << std::endl;
-			self->CloseConnection();
+			std::cout << error_code << std::endl;
+			if (boost::asio::error::operation_aborted != error_code)
+			{
+				std::cout << "Connection timeout" << std::endl;
+				self->CloseConnection();
+			}
 		}
 	);
 }
