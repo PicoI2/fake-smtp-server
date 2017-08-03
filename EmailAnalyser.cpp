@@ -1,6 +1,7 @@
 #include "EmailAnalyser.h"
 
 #include <iostream>
+#include <fstream>
 #include <regex>
 #include <thread>
 
