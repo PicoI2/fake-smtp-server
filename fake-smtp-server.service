@@ -1,0 +1,11 @@
+[Unit]
+Description=Fake smtp server service
+ 
+[Service]
+ExecStart=/opt/fake-smtp-server/fake-smtp-server 12025
+WorkingDirectory=/opt/fake-smtp-server
+StandardOutput=null
+ 
+[Install]
+WantedBy=multi-user.target
+Alias=fake-smtp-server.service

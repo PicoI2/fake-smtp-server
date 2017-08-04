@@ -14,6 +14,7 @@
 #
 #   You could create as much script file as you want, but these must end in *.sh, and these must be in the execution directory of fake-smtp-server.
 echo "Modify $0 to call command when receiving email."
+touch lastEmailSeen
 
 #   This is an example to show you how you could send information to domoticz :
 # curl -s http://domoticz:8080/json.htm?type=command&param=switchlight&idx=39&switchcmd=On&username=MkE=&password=OVM=
