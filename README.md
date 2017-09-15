@@ -38,6 +38,8 @@ Subject: Motion detected by camera
 
 Then add to your script file any command, such as sending info to your domotic server<br>
 curl -s http://domoticz:8080/json.htm?type=command&param=switchlight&idx=39&switchcmd=On&username=MkE=&password=OVM=
+<br>
+Create an "attachments" folder in the execution directory to get access to attached files.
 
 Create service
 ---------

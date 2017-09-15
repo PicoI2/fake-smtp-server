@@ -1,7 +1,6 @@
 #include "TcpConnection.h"
 
 const long TIMEOUT = 60; // seconds
-static constexpr size_t MAX_EMAIL_SIZE = 1024*1024; // 1 Mo
 
 // Constructor
 CTcpConnection::CTcpConnection(boost::asio::io_service& aIoService, CEmailAnalyser& aEmailAnalyser) 
@@ -71,6 +70,11 @@ void CTcpConnection::HandleRead(const boost::system::error_code& error, size_t b
 		{
 			Send("250 Ok\r\n");
 		}
+	}
+
+	if (error)
+	{
+		// std::cout << "ERROR: " << error.message() << std::endl;
 	}
 
 	if (bCloseConnexion)

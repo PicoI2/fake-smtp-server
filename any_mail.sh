@@ -16,5 +16,12 @@
 echo "Modify $0 to call command when receiving email."
 touch lastEmailSeen
 
+# Attachments are $1, $2, ...
+# They could be overwritted if not copied
+for attachment in "$@"
+do
+    mv "attachments/$attachment" "attachments/$(date +%F_%H-%M-%S)_$attachment"
+done
+
 #   This is an example to show you how you could send information to domoticz :
 # curl -s http://domoticz:8080/json.htm?type=command&param=switchlight&idx=39&switchcmd=On&username=MkE=&password=OVM=

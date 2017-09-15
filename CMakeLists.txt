@@ -12,6 +12,7 @@ set (SOURCE_FILES
    TcpConnection.cpp
    TcpServer.cpp
    main.cpp
+   Base64.cpp
 )
 
 add_executable(fake-smtp-server ${SOURCE_FILES})

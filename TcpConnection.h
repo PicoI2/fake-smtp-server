@@ -11,6 +11,8 @@
 
 using boost::asio::ip::tcp;
 
+static constexpr size_t MAX_EMAIL_SIZE = 1024*1024; // 1 Mo
+
 class CTcpConnection : public std::enable_shared_from_this<CTcpConnection>
 {
 public:
@@ -36,7 +38,7 @@ private:
 	boost::signals2::signal < void (const std::string&) > NewMail;	// Signal to send mail to EmailAnalyser
 	boost::asio::deadline_timer mTimer;	// Timeout
 	tcp::socket mSocket;
-	std::array<char, 1024> mBuffer;
+	std::array<char, MAX_EMAIL_SIZE> mBuffer;
 	std::string mClientAsString;	// somthing like 127.0.0.1:45677
 	bool mbDataSeen = false;	// "DATA" has been received from client
 	std::string mEmail;		// Complete email
