@@ -35,8 +35,8 @@ void CEmailAnalyser::NewEmail (const std::string& aNewEmail)
 	// (regex on multiple line is not working)
 	std::istringstream EmailLines (aNewEmail);
 
-	// Search for scripts in execution directory
-	boost::filesystem::path p = "./";
+	// Search for scripts in scripts directory
+	boost::filesystem::path p = "./scripts/";
     for (boost::filesystem::directory_entry& entry : boost::make_iterator_range(boost::filesystem::directory_iterator(p), {}))
 	{
 		if (SCRIPT_EXTENSION == entry.path().extension())
@@ -111,12 +111,12 @@ void CEmailAnalyser::GetAttachments (const std::string& aNewEmail, std::string& 
 			}
 			else
 			{
-			   AttachmentFile << base64_decode(EmailLine);
+                AttachmentFile << base64_decode(EmailLine);
 			}
 		}
 		else 
 		{
-			if (boost::iequals(EmailLine, "Content-Disposition: attachment;"))
+			if (std::string::npos != EmailLine.find("Content-Disposition: attachment;"))
 			{
 				std::getline(EmailLines, EmailLine);
 				std::regex FilenameRegex("filename=\"([^/\\:*?\"<>|]*)\"");	// chars / \ : * ? " < > | are forbids in filename

@@ -5,7 +5,11 @@ Description=Fake smtp server service
 ExecStart=/opt/fake-smtp-server/fake-smtp-server 12025
 WorkingDirectory=/opt/fake-smtp-server
 StandardOutput=null
- 
+StandardError=syslog
+SyslogIdentifier=fake-smtp-server
+User=pi
+Group=pi
+
 [Install]
 WantedBy=multi-user.target
 Alias=fake-smtp-server.service
