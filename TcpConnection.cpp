@@ -1,3 +1,4 @@
+#include <boost/algorithm/string.hpp>
 #include "TcpConnection.h"
 
 const long TIMEOUT = 60; // seconds
@@ -52,6 +53,7 @@ void CTcpConnection::HandleRead(const boost::system::error_code& error, size_t b
 		// Append to email
 		mEmail.append(message);
 
+        boost::algorithm::to_upper(message);
 		// Limit email size
 		if (MAX_EMAIL_SIZE < mEmail.size())
 		{
@@ -66,7 +68,7 @@ void CTcpConnection::HandleRead(const boost::system::error_code& error, size_t b
 		{
 			bCloseConnexion = true;
 		}
-		else
+		else if (!mbDataSeen || std::string::npos != message.find("\r\n.\r\n") || std::string::npos != message.rfind(".\r\n", 0))
 		{
 			Send("250 Ok\r\n");
 		}
@@ -92,6 +94,7 @@ void CTcpConnection::HandleRead(const boost::system::error_code& error, size_t b
 // Send message to client
 void CTcpConnection::Send (std::string aMessage)
 {
+    // std::cout << "\033[1;35m" << aMessage << "\033[0m";
 	if (mSocket.is_open())
 	{
 		// Uncomment to see server response
